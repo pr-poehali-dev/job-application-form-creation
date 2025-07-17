@@ -262,10 +262,7 @@ export default function Index() {
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl flex items-center gap-2">
-                  <Icon name="FileText" size={24} />
-                  Форма заявки генеральному директору
-                </CardTitle>
+                <CardTitle className="text-xl flex items-center gap-2">Форма для заполнения</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
