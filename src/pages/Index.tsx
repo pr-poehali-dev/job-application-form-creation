@@ -69,9 +69,7 @@ export default function Index() {
       <section id="home" className="py-16 bg-gradient-to-b from-background to-muted/20">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-              Система подачи заявок генеральному директору
-            </h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Форма для подачи заявок</h2>
             <p className="text-lg text-muted-foreground mb-8">
               Быстрый и удобный способ направить вашу заявку, предложение или обращение непосредственно руководству компании
             </p>
