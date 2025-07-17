@@ -26,12 +26,67 @@ export default function Index() {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [webhookUrl, setWebhookUrl] = useState('https://hooks.zapier.com/hooks/catch/your-webhook-url');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Заявка отправлена:', formData);
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 5000);
+    setIsLoading(true);
+    setSubmitError(null);
+    
+    try {
+      // Подготовка данных для отправки
+      const submitData = {
+        ...formData,
+        timestamp: new Date().toISOString(),
+        requestId: `REQ-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        status: 'pending'
+      };
+      
+      // Отправка на webhook
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submitData),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      console.log('Заявка успешно отправлена:', submitData);
+      setIsSubmitted(true);
+      
+      // Очистка формы после успешной отправки
+      setFormData({
+        employeeName: '',
+        department: '',
+        position: '',
+        email: '',
+        phone: '',
+        requestType: '',
+        priority: '',
+        subject: '',
+        description: '',
+        expectedDate: '',
+        attachments: ''
+      });
+      
+      setTimeout(() => setIsSubmitted(false), 8000);
+      
+    } catch (error) {
+      console.error('Ошибка при отправке заявки:', error);
+      setSubmitError(
+        error instanceof Error 
+          ? `Ошибка отправки: ${error.message}`
+          : 'Произошла неизвестная ошибка при отправке заявки'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -190,6 +245,19 @@ export default function Index() {
                 <Icon name="CheckCircle" size={16} className="text-green-600" />
                 <AlertDescription className="text-green-800">
                   Заявка успешно отправлена! Номер заявки: #2024-{Math.floor(Math.random() * 1000).toString().padStart(3, '0')}
+                  <br />
+                  Ожидайте ответа на указанный email в течение 3-5 рабочих дней.
+                </AlertDescription>
+              </Alert>
+            )}
+            
+            {submitError && (
+              <Alert className="mb-6 bg-red-50 border-red-200">
+                <Icon name="AlertCircle" size={16} className="text-red-600" />
+                <AlertDescription className="text-red-800">
+                  {submitError}
+                  <br />
+                  <span className="text-sm">Попробуйте еще раз или обратитесь к администратору.</span>
                 </AlertDescription>
               </Alert>
             )}
@@ -368,15 +436,43 @@ export default function Index() {
                           <li>• Срок рассмотрения: 3-5 рабочих дней</li>
                           <li>• О результатах будет сообщено на указанный email</li>
                           <li>• Конфиденциальность гарантирована</li>
+                          <li>• Данные отправляются через защищенный webhook</li>
                         </ul>
                       </div>
                     </div>
                   </div>
                   
-                  <Button type="submit" className="w-full" size="lg">
-                    <Icon name="Send" size={20} className="mr-2" />
-                    Отправить заявку генеральному директору
+                  <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <Icon name="Loader2" size={20} className="mr-2 animate-spin" />
+                        Отправка заявки...
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="Send" size={20} className="mr-2" />
+                        Отправить заявку генеральному директору
+                      </>
+                    )}
                   </Button>
+                  
+                  {/* Webhook Configuration */}
+                  <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <Label htmlFor="webhookUrl" className="text-sm font-medium text-gray-700">
+                      URL Webhook (для администраторов)
+                    </Label>
+                    <Input
+                      id="webhookUrl"
+                      type="url"
+                      value={webhookUrl}
+                      onChange={(e) => setWebhookUrl(e.target.value)}
+                      placeholder="https://hooks.zapier.com/hooks/catch/your-webhook-url"
+                      className="mt-1 text-sm"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Можно использовать Zapier, Make.com, или любой другой webhook сервис
+                    </p>
+                  </div>
                 </form>
               </CardContent>
             </Card>
