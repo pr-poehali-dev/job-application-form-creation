@@ -125,9 +125,7 @@ export default function Index() {
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Форма для подачи заявок</h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Быстрый и удобный способ направить вашу заявку, предложение или обращение непосредственно руководству компании
-            </p>
+            <p className="text-lg text-muted-foreground mb-8">Быстрый и удобный способ направить вашу заявку, предложение или обращение непосредственно руководству.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="text-base" onClick={() => document.getElementById('application')?.scrollIntoView({ behavior: 'smooth' })}>
                 <Icon name="Send" size={20} className="mr-2" />
