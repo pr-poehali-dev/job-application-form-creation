@@ -271,7 +271,7 @@ export default function Index() {
                     <h3 className="font-medium text-foreground mb-4">Информация о сотруднике</h3>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="employeeName">ФИО *</Label>
+                        <Label htmlFor="employeeName">Nicname *</Label>
                         <Input
                           id="employeeName"
                           value={formData.employeeName}
